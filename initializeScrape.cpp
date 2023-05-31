@@ -64,7 +64,7 @@ void replaceSomeUnicode(std::string& wholeString) {
     replaceStringWithString(wholeString,"\xe2\x80\x99",3,"'");
 }
 
-//Returns multiple matches for a regex pattern
+//Returns multiple matches for a regex pattern (with unicode replaced)
 std::vector<std::string> getAllRegexMatches(std::string htmlString, std::regex matchMe, int trimStart, int trimEnd) {
     std::smatch sm;
     std::vector<std::string> ret;
@@ -77,7 +77,7 @@ std::vector<std::string> getAllRegexMatches(std::string htmlString, std::regex m
     return ret;
 }
 
-//Returns single match for a regex pattern
+//Returns single match for a regex pattern (with unicode replaced)
 std::string getOneRegexMatch(std::string htmlString, std::regex matchMe, int trimStart, int trimEnd) {
     std::smatch sm;
     std::string ret = "";

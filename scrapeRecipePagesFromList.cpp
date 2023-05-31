@@ -21,7 +21,7 @@ public:
     std::string id;
     std::string description;
 
-    //Output cocktail data in Swift-compatible format for array of array of strings.
+    //Output cocktail data in Swift-compatible format (for array of array of strings).
     void ship(std::string fileName) {
         std::ofstream writeMe(fileName, std::ios_base::app | std::ios_base::out);
         writeMe<<"[\""<<name<<"\",\""<<rating<<"\",\""<<numberOfRatings<<"\",\""<<url<<"\",\""

@@ -10,7 +10,7 @@ void getRecipePages(std::unordered_map<std::string,std::string>& linksAndKeyword
     //Here we are scraping pages organized by the liquor in the cocktail.
     std::vector<std::vector<std::string>> allSuffixes;
     allSuffixes.push_back({"brandy-cognac-recipes-5117857","brandy,cognac"});
-    /*allSuffixes.push_back({"champagne-recipes-5117856","champagne"});
+    allSuffixes.push_back({"champagne-recipes-5117856","champagne"});
     allSuffixes.push_back({"gin-recipes-5117855","gin"});
     allSuffixes.push_back({"liqueur-fortified-wine-recipes-5117854","liqueur"});
     allSuffixes.push_back({"mezcal-recipes-5117853","mezcal"});
@@ -18,7 +18,7 @@ void getRecipePages(std::unordered_map<std::string,std::string>& linksAndKeyword
     allSuffixes.push_back({"sangria-recipes-5117851","sangria"});
     allSuffixes.push_back({"tequila-recipes-5117848","tequila"});
     allSuffixes.push_back({"vodka-recipes-5117850","vodka"});
-    allSuffixes.push_back({"whiskey-recipes-5117847","whiskey"});*/
+    allSuffixes.push_back({"whiskey-recipes-5117847","whiskey"});
 
     for(std::vector<std::string> suffix : allSuffixes) {
         std::string url = "https://www.seriouseats.com/" + suffix[0];

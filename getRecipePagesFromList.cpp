@@ -9,7 +9,7 @@ void getRecipePagesFromList(std::unordered_map<std::string,std::string>& linksAn
     //Here we are scraping pages sorted by season,liquor,holiday, etc.
     std::vector<std::vector<std::string>> allSuffixes;
     allSuffixes.push_back({"memorial-day-batch-cocktails","memorial,batch,holiday,spring,summer"});
-    /*allSuffixes.push_back({"cinco-de-mayo-cocktail-recipes","cinco de mayo,holiday,spring"});
+    allSuffixes.push_back({"cinco-de-mayo-cocktail-recipes","cinco de mayo,holiday,spring"});
     allSuffixes.push_back({"simple-3-ingredient-drinks-to-make-at-home","simple,easy"});
     allSuffixes.push_back({"best-rye-whiskey-cocktail-recipes","rye,whiskey"});
     allSuffixes.push_back({"negroni-variations-bitter-cocktail-drink-fall-winter","negroni,bitter,fall,winter"});
@@ -42,7 +42,7 @@ void getRecipePagesFromList(std::unordered_map<std::string,std::string>& linksAn
     allSuffixes.push_back({"new-orleans-cocktail-recipes-celebrate-mardi-gras-party-how-to-make-hurricane-sazerac-pimms-gin-fizz-milk-punch","mardi gras,holiday"});
     allSuffixes.push_back({"easy-gin-cocktails","gin,easy,simple"});
     allSuffixes.push_back({"best-irish-whiskey-cocktail-recipes-st-patricks-day","whiskey,irish,patty's"});
-    allSuffixes.push_back({"campari-cocktails","campari"});*/
+    allSuffixes.push_back({"campari-cocktails","campari"});
     
     
     for(std::vector<std::string> suffix : allSuffixes) {
