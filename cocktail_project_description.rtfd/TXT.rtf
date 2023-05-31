@@ -1,0 +1,145 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red106\green152\blue85;\red0\green0\blue0;
+\red67\green192\blue160;\red202\green202\blue202;\red106\green152\blue85;\red140\green211\blue254;\red212\green214\blue154;
+\red194\green126\blue101;\red183\green111\blue179;\red167\green197\blue152;\red0\green255\blue0;\red70\green137\blue204;
+}
+{\*\expandedcolortbl;;\cssrgb\c100000\c100000\c100000;\cssrgb\c48627\c65098\c40784;\cssrgb\c0\c0\c0;
+\cssrgb\c30588\c78824\c69020;\cssrgb\c83137\c83137\c83137;\cssrgb\c48627\c65098\c40784;\cssrgb\c61176\c86275\c99608;\cssrgb\c86275\c86275\c66667;
+\cssrgb\c80784\c56863\c47059;\cssrgb\c77255\c52549\c75294;\cssrgb\c70980\c80784\c65882;\cspthree\c38530\c100000\c23295;\cssrgb\c33725\c61176\c83922;
+}
+\margl1440\margr1440\vieww28600\viewh18000\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 This project arose naturally from a common problem in my life: with a scattered selection of booze and ingredients, what cocktails could I make?  My original idea for this project was to scrape a collection of cocktail websites to get a wide range of recipes, and then do some sorting and filtering to find the best recipes.  But after scrolling through cocktail recipes on seriouseats.com, my go-to site for food and drinks, I realized that the collection there is sufficiently broad \'97 containing both classic and experimental cocktails (buttermilk in a gin recipe, anyone?).  With about 500 cocktail recipes, I decided that collecting all of these would give me a pretty solid list of recipes.\
+\
+When I actually investigated seriouseats.com to see how best to collect all of the cocktail data, I ran into some trouble.  Each cocktail/recipe has its own page, for example,\
+{\field{\*\fldinst{HYPERLINK "https://www.seriouseats.com/sparkling-bourbon-pear-cocktail-easy-big-batch-drink-recipe-for-a-party"}}{\fldrslt https://www.seriouseats.com/sparkling-bourbon-pear-cocktail-easy-big-batch-drink-recipe-for-a-party}}.\
+I wanted to visit all such recipe pages in a systematic way, and there wasn\'92t an obvious way to do this.  For comparison, here are a couple example which demonstrate how one might systematically traverse all pages.\
+\
+Suppose you wanted to find all the locations of the grocery store Kroger.  If you go to Kroger\'92s website and try to find stores, you end up here:\
+{\field{\*\fldinst{HYPERLINK "https://www.kroger.com/stores/search"}}{\fldrslt https://www.kroger.com/stores/search}},\
+where you are prompted to search for locations, by city or state or zip.  But playing around with the URL a little bit will lead you to the following page:\
+{\field{\*\fldinst{HYPERLINK "https://www.kroger.com/stores/grocery"}}{\fldrslt https://www.kroger.com/stores/grocery}}.\
+This page contains a link to every store location, so you could either scrape this single page (if you only care about city and state), or you could follow each link to grab a little more detail about each location.\
+\
+For another example, suppose we wanted to find all the Costco locations.  With an initial search, we find that an example location appears at\
+{\field{\*\fldinst{HYPERLINK "https://www.costco.com/warehouse-locations/florence-ky-1197.html"}}{\fldrslt https://www.costco.com/warehouse-locations/florence-ky-1197.html}}.\
+Playing around with the URL a bit, we find that the text after \'93/\'93 and before \'93-1197\'94 is irrelevant, and changing 1197 to 1198 will show you a new store location.  Explicitly, the URL\
+{\field{\*\fldinst{HYPERLINK "https://www.costco.com/warehouse-locations/florence-ky-1198.html"}}{\fldrslt https://www.costco.com/warehouse-locations/florence-ky-1198.html}}\
+will return the location with ID 1198, in Pleasant Prairie, WI, even though it says Florence, KY in the address!  Similarly,\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.costco.com/warehouse-locations/whatislove-1198.html"}}{\fldrslt \cf0 https://www.costco.com/warehouse-locations/whatislove-1198.html}}\
+and\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.costco.com/warehouse-locations/babydonthurtme-1198.html"}}{\fldrslt \cf0 https://www.costco.com/warehouse-locations/babydonthurtme-1198.html}}\
+and\
+{\field{\*\fldinst{HYPERLINK "https://www.costco.com/warehouse-locations/nomore-1198.html"}}{\fldrslt https://www.costco.com/warehouse-locations/nomore-1198.html}}\
+all go to the same page.\
+This is great, because it allows us to visit pages simply by iterating through IDs, assuming we can reasonably bound the IDs (this wouldn\'92t be efficient if IDs have, for example, 9+ digits, and it would be pretty bad etiquette to hit a site so many times anyway).\
+\
+Okay, back to seriouseats: I wasn\'92t able to find a page containing a long list of recipes, nor was I able to find any obvious identifiers to systematically iterate.  One could visit a few sites \'93randomly\'94, by continuing to follow links to \'93suggested\'94 or \'93similar\'94 items, grabbing any recipe URLs and adding them to a set for future scraping, but this seems far too unpredictable: if we somehow end up in a cycle of whiskey recipes, will we ever find a margarita?  I considered trying to first find lists of cocktails, like this one\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.seriouseats.com/cocktails-everyone-should-know"}}{\fldrslt \cf0 https://www.seriouseats.com/cocktails-everyone-should-know}}\
+and collecting the 25 links there to later grab the recipe details, but I also didn\'92t see any easy way to get a list of these lists either.  I considered searching \'93cocktails\'94, but the results are less recipes and more articles about cocktails; and moreover, it seems the number of results is limited to 120.\
+\
+I finally landed on a semi-manual approach.  Starting from here:\
+{\field{\*\fldinst{HYPERLINK "https://www.seriouseats.com/cocktail-recipes-5117858"}}{\fldrslt https://www.seriouseats.com/cocktail-recipes-5117858}}\
+one can click on various spirits (brandy, vodka, etc) to get a list of links to all recipes containing that spirit.  So for example, collecting all the links at\
+{\field{\*\fldinst{HYPERLINK "https://www.seriouseats.com/vodka-recipes-5117850"}}{\fldrslt https://www.seriouseats.com/vodka-recipes-5117850}}\
+and\
+{\field{\*\fldinst{HYPERLINK "https://www.seriouseats.com/vodka-recipes-5117850"}}{\fldrslt https://www.seriouseats.com/gin-recipes-5117855}}\
+presumably gives me a complete list of recipes containing vodka and gin.\
+Some drinks, like the Fog Cutter, appear on multiple lists.\
+\
+I panicked for a moment when I saw that the whiskey, tequila, and rum pages all contain exactly 64 entries \'97 are the lists capped and incomplete?  Due to this uncertainty, I landed on a hybrid approach: scrape all the \'93spirit\'94 pages (gin, whiskey, tequila) to get cocktail links, and also scrape a few dozen \'93big list\'94 pages: easy cocktails, Memorial Day cocktails.  A bonus of this approach is that I can add appropriate keywords depending on which list the link was on, and these keywords can be used for later cocktail filtering by season, difficulty, spirit, etc.  Although this approach meant that I had to feed in about 30-40 initial links, and manually add the keywords, I couldn\'92t find a more reasonable systematic way to go about it.\
+\
+Checking out the HTML for each of these \'93spirit pages\'94, the links I needed were beautifully formatted and collected together in the middle of the 4000 lines of HTML.\
+\
+\{\
+"@type": "ListItem"\
+,"position": 9\
+,"url": "https://www.seriouseats.com/classic-sangrita-orange-pomegranate-recipe"\
+\}\
+,\
+\{\
+"@type": "ListItem"\
+,"position": 10\
+,"url": "https://www.seriouseats.com/the-best-frozen-lime-margaritas-recipe-tequila-cocktail-for-parties"\
+\}\
+,\
+\{\
+"@type": "ListItem"\
+,"position": 11\
+,"url": "https://www.seriouseats.com/cucumber-celery-tequila-cooler-simple-cocktail-summer-recipe"\
+\}\
+\
+The logic of the link-gathering method is pretty straightforward:\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf3 \cb4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 //Create vector of URL suffixes to scrape, along with relevant keywords.						\cf2 \cb1 \strokec2 \
+\cf5 \cb4 \strokec5 std\cf2 \strokec2 ::vector\cf6 \strokec6 <\cf5 \strokec5 std\cf2 \strokec2 ::vector\cf6 \strokec6 <\cf5 \strokec5 std\cf2 \strokec2 ::string\cf6 \strokec6 >>\cf2 \strokec2  allSuffixes;										\
+																				\
+\pard\pardeftab720\partightenfactor0
+\cf7 \cb4 \outl0\strokewidth0 //A sample suffix/keywords pair, there are a few dozen of these.\cf2 \cb4 \outl0\strokewidth0 \strokec2 								\cb1 \
+\pard\pardeftab720\partightenfactor0
+\cf8 \cb4 \strokec8 allSuffixes\cf2 \strokec2 .\cf9 \strokec9 push_back\cf2 \strokec2 (\{\cf10 \strokec10 "brandy-cognac-recipes-5117857"\cf2 \strokec2 ,\cf10 \strokec10 "brandy,cognac"\cf2 \strokec2 \});						\cb1 \
+\cf7 \cb4 \outl0\strokewidth0 																				\cf2 \cb1 \outl0\strokewidth0 \strokec2 \
+\cf11 \cb4 \strokec11 for\cf2 \strokec2 (\cf5 \strokec5 std\cf2 \strokec2 ::vector\cf6 \strokec6 <\cf5 \strokec5 std\cf2 \strokec2 ::string\cf6 \strokec6 >\cf2 \strokec2  suffix : allSuffixes) \{										\cb1 \
+\cb4     \cf5 \strokec5 std\cf2 \strokec2 ::string url \cf6 \strokec6 =\cf2 \strokec2  \cf10 \strokec10 "https://www.seriouseats.com/"\cf2 \strokec2  \cf6 \strokec6 +\cf2 \strokec2  \cf8 \strokec8 suffix\cf2 \strokec2 [\cf12 \strokec12 0\cf2 \strokec2 ];							\
+																				\
+\pard\pardeftab720\partightenfactor0
+\cf7 \cb4 \outl0\strokewidth0     //Grab the HTML located at the given URL;                    							\cf2 \cb1 \outl0\strokewidth0 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb4     \cf5 \strokec5 std\cf2 \strokec2 ::string htmlString \cf6 \strokec6 =\cf2 \strokec2  \cf9 \strokec9 getPayload\cf2 \strokec2 (url); 											\
+                   												\cf13 	\cf2 				\cb1 \
+\cf3 \cb4 \strokec3     //Truncate both ends of huge html payload;									  		\cf2 \cb1 \strokec2 \
+\cb4     \cf5 \strokec5 std\cf2 \strokec2 ::string truncatedHTMLString \cf6 \strokec6 =\cf2 \strokec2  \cf9 \strokec9 getSubHTMLString\cf2 \strokec2 (htmlString,\cf10 \strokec10 "ItemList"\cf2 \strokec2 ,\cf10 \strokec10 "numberOfItems"\cf2 \strokec2 );		\
+																				\cb1 \
+\cf3 \cb4 \strokec3     //Grab and trim suffixes of recipe pages according to regex pattern						\cf2 \cb1 \strokec2 \
+\cb4     \cf5 \strokec5 std\cf2 \strokec2 ::vector\cf6 \strokec6 <\cf5 \strokec5 std\cf2 \strokec2 ::string\cf6 \strokec6 >\cf2 \strokec2  regMatches \cf6 \strokec6 =\cf2 \strokec2  \cf9 \strokec9 getAllRegexMatches\cf2 \strokec2 (truncatedHTMLString,				\
+	   (\cf5 \strokec5 std\cf2 \strokec2 ::regex)\cf10 \strokec10 ",\cf14 \strokec14 \\"\cf10 \strokec10 url\cf14 \strokec14 \\"\cf10 \strokec10 : \cf14 \strokec14 \\"\cf10 \strokec10 .*\cf14 \strokec14 \\"\cf10 \strokec10 "\cf2 \strokec2 ,\cf12 \strokec12 37\cf2 \strokec2 ,\cf12 \strokec12 38\cf2 \strokec2 );											\
+																				\cb1 		\
+\cf3 \cb4 \strokec3     //Add scraped link, along with the keywords, to an unordered_map							\
+\cf2 \strokec2     \cf11 \strokec11 for\cf2 \strokec2 (\cf5 \strokec5 std\cf2 \strokec2 ::string s : regMatches) \{													\cb1 \
+\cb4         \cf11 \strokec11 if\cf2 \strokec2 (\cf8 \strokec8 linksAndKeywords\cf2 \strokec2 .\cf9 \strokec9 find\cf2 \strokec2 (s)\cf6 \strokec6 ==\cf8 \strokec8 linksAndKeywords\cf2 \strokec2 .\cf9 \strokec9 end\cf2 \strokec2 ()) \cf8 \strokec8 linksAndKeywords\cf2 \strokec2 [s]\cf6 \strokec6 =\cf8 \strokec8 suffix\cf2 \strokec2 [\cf12 \strokec12 1\cf2 \strokec2 ];		\
+        \cf11 \strokec11 else\cf2 \strokec2  \cf8 \strokec8 linksAndKeywords\cf2 \strokec2 [s]\cf6 \strokec6 +=\cf10 \strokec10 ","\cf6 \strokec6 +\cf8 \strokec8 suffix\cf2 \strokec2 [\cf12 \strokec12 1\cf2 \strokec2 ];											\cb1 \
+\cb4     \} 																			\
+\}																				\cb1 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+The logic of the method which actually scrapes the cocktail data is similar: visit each recipe page, collect relevant recipe data according to carefully constructed regex patterns, and output this data.\
+\
+This gives us about 500 cocktails in a text file, formatted like this:\
+\
+["Clamato Sangrita With Jalape\'f1o and Coriander","5","1","clamato-sangrita-jalapeno-recipe","cocktail, tequila","Recipes,Recipes By Course,Drinks,Cocktails,Tequila","tequila"]\
+\
+We have the name, some rating information, and a bunch of keywords which will help us with future filtering.\
+\
+Although I was able to scrape the ingredients for each cocktail, the formatting of this ingredient list was so bad so as to be basically unusable.  For example, here\'92s the ingredient list for a \'93Michelada\'94\
+\
+Taj\'edn or other chile-salt blend (optional; see note)\
+Kosher or sea salt\
+2 ounces (60ml) fresh juice from 2 limes (see note), half a juiced lime reserved for the rim\
+2 teaspoons (10ml) hot sauce, preferably a Mexican-style brand like Tapat\'edo (our favorite); see note\
+1 teaspoon (5ml) Worcestershire sauce\
+1 (12-ounce; 355ml) can or bottle light Mexican beer, such as Modelo, Pac\'edfico, Tecate, Victoria, or Corona, well chilled\
+\
+Ideally we\'92d want a searchable list to look like \'93Taj\'edn, salt, limes, hot sauce, Worcestershire, Mexican beer\'94, but it would take quite a bit more work to map long descriptive strings to important keywords.  Unfortunately these ingredients were rarely listed with other keywords and tags in the HTML, and so I had to scrap the idea of searching by ingredient.\
+\
+In the end, the collected keywords and ratings gave enough data to build a simple filtering app.  Here are some screenshots of the finished product.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2023-05-31 at 9.53.36 AM.png \width3310 \height6710 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Screenshot 2023-05-31 at 9.58.03 AM.png \width3310 \height6630 \appleattachmentpadding0 \appleembedtype0 \appleaqc
+}¬}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+\
+\
+}
