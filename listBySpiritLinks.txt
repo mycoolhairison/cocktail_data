@@ -1,0 +1,10 @@
+brandy-cognac-recipes-5117857;brandy,cognac
+champagne-recipes-5117856;champagne
+gin-recipes-5117855;gin
+liqueur-fortified-wine-recipes-5117854;liqueur
+mezcal-recipes-5117853;mezcal
+rum-recipes-5117852;rum
+sangria-recipes-5117851;sangria
+tequila-recipes-5117848;tequila
+vodka-recipes-5117850;vodka
+whiskey-recipes-5117847;whiskey
