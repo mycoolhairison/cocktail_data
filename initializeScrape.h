@@ -1,3 +1,4 @@
+
 #ifndef INITIALIZE_SCRAPE_H
 #define INITIALIZE_SCRAPE_H
 
