@@ -1,5 +1,5 @@
 # Project description
-We scrape seriouseats.com for cocktail recipe data, which is added to an application with basic filtering capabilities.
+We scrape seriouseats.com for cocktail recipe data, which is then added to an application with basic filtering capabilities.
 
 # Organization
 <ul>
