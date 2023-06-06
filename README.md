@@ -93,21 +93,24 @@ I panicked for a moment when I saw that the whiskey, tequila, and rum pages all 
 
 Content with the overall idea, I started checking out the HTML on each of these "spirit pages," and I was happy to find that the links I needed were nicely formatted in JSON and collected together in the middle of 4000 lines of HTML:
 
-`{"@type": "ListItem"
+```
+{"@type": "ListItem"
 ,"position": 9
-,"url": "https://www.seriouseats.com/classic-sangrita-orange-pomegranate-recipe"},</br>
+,"url": "https://www.seriouseats.com/classic-sangrita-orange-pomegranate-recipe"},
 {"@type": "ListItem"
 ,"position": 10
-,"url": "https://www.seriouseats.com/the-best-frozen-lime-margaritas-recipe-tequila-cocktail-for-parties"},</br>
+,"url": "https://www.seriouseats.com/the-best-frozen-lime-margaritas-recipe-tequila-cocktail-for-parties"},
 {"@type": "ListItem"
 ,"position": 11
-,"url": "https://www.seriouseats.com/cucumber-celery-tequila-cooler-simple-cocktail-summer-recipe"}`
+,"url": "https://www.seriouseats.com/cucumber-celery-tequila-cooler-simple-cocktail-summer-recipe"}
+```
 
 The logic of the link-gathering method is pretty straightforward:
 
-`
+```
 //Create vector of URL suffixes to scrape, along with relevant keywords.
-vector<pair<string,string>> suffixAndKeywordPairs;
+std::vector<std::pair<std::string,std::string>> suffixAndKeywordPairs;
+
 //Add suffix/keyword pairs from file or manually
 suffixAndKeywordPairs.push_back({"brandy-cognac-recipes-5117857","brandy,cognac"});
 
@@ -121,15 +124,15 @@ for(const std::vector<std::string>& suffixAndKey : suffixAndKeywordPairs) {
     std::string truncatedHTMLString = getSubHTMLString(htmlString,"ItemList","numberOfItems");
     
     //Grab and trim suffixes of recipe pages according to regex pattern
-    std::vector<std::string> regMatches = getAllRegexMatches(truncatedHTMLString,(std::regex)",\"url\": \".*\"",37,38);
+    std::vector<std::string> linkMatches = getAllRegexMatches(truncatedHTMLString,(std::regex)",\"url\": \".*\"",37,38);
     
     //Add scraped link, along with the keywords, to an unordered_map
-    for(const std::string& link : regMatches) {
+    for(const std::string& link : linkMatches) {
         if(linksAndKeywords.find(link)==linksAndKeywords.end()) linksAndKeywords[link]=suffixAndKey.second;		
         else linksAndKeywords[link]+=","+suffixAndKey.second;
     }
 }
-`</br>
+```
 
 The "big list" pages were slightly more annoying to navigate, without well-structured links to the cocktail pages, and I ended up having to write a few different Regex patterns to try to capture everything.
 
@@ -137,12 +140,16 @@ Moving on to the method which actually scrapes the cocktail data, the general id
 
 This gives us about 500 cocktails in a text file, which I chose to format like this:
 
-`["Clamato Sangrita With Jalapeño and Coriander","5","1","clamato-sangrita-jalapeno-recipe","cocktail, tequila","Recipes,Recipes By Course,Drinks,Cocktails,Tequila","tequila"]`
+```
+["Clamato Sangrita With Jalapeño and Coriander","5","1","clamato-sangrita-jalapeno-recipe",
+"cocktail, tequila","Recipes,Recipes By Course,Drinks,Cocktails,Tequila","tequila"]
+```
 
-I chose this formatting because this is a how Swift formats an array of strings, so I can simply copy this directly into my Swift code.  This was simplest to do for this project, and because the list is relatively small, but as a future update, or perhaps for a larger project, I'd be interested in learning better serialization techniques, maybe playing around with ProtoBuf.
+I chose this formatting because this is a how Swift formats an array of strings, so I can simply copy this directly into my Swift code.  This was simplest to do for this project, and because the list is relatively small, but it's not ideal in general.  As a future update, or perhaps for a larger project, I'd be interested in learning better serialization techniques, maybe playing around with Protocol Buffers.
 
-In any case, here we have the name, some rating information, and a bunch of keywords.  To build the filtering app, I wanted to know what some good filtering options would be, so I tried to figure out the most common keywords and tags scraped from the site.  The most common keywords list, with occurrences, looks like this:</br>
-`
+In any case, here we have the name, some rating information, and a bunch of keywords.  To build the filtering app, I wanted to know what some good filtering options would be, so I tried to figure out the most common keywords and tags scraped from the site.  The most common keywords list, with occurrences, looks like this:
+
+```
 31: sparkling wine
 32: vodka
 32: winter
@@ -157,25 +164,23 @@ In any case, here we have the name, some rating information, and a bunch of keyw
 73: gin
 102: cocktails
 226: cocktail
-`</br>
+```
+
 which is only barely usable, since we already know each drink's spirit based on which page we grabbed it from.  The most-common-tags list is unfortunately similar, but at least has some seasons and holidays.  All of this made me happy that I passed along relevant keywords from the link location, since these ended up giving the most important filtering criteria.  In the end, I had enough data to build the filtering app displayed above!
 
 # Future Ideas
 
-Besides the better serialization mentioned above, it would be nice to allow some filtering by ingredient, along the lines of my original goal for this project.  Although I was able to scrape the ingredients for each cocktail, the formatting of this ingredient list was so bad so as to be basically unusable.  For example, here’s the ingredient list for a “Michelada”
+Besides the better serialization mentioned above, it would be nice to allow some filtering by ingredient, along the lines of my original goal for this project.  Although I was able to scrape the ingredients for each cocktail, the formatting of this ingredient list was so bad so as to be basically unusable.  For example, here’s the ingredient list for a "Michelada":
 
-`Tajín or other chile-salt blend (optional; see note)
-
+```
+Tajín or other chile-salt blend (optional; see note)
 Kosher or sea salt
-
 2 ounces (60ml) fresh juice from 2 limes (see note), half a juiced lime reserved for the rim
-
 2 teaspoons (10ml) hot sauce, preferably a Mexican-style brand like Tapatío (our favorite); see note
-
 1 teaspoon (5ml) Worcestershire sauce
-
-1 (12-ounce; 355ml) can or bottle light Mexican beer, such as Modelo, Pacífico, Tecate, Victoria, or Corona, well chilled`
+1 (12-ounce; 355ml) can or bottle light Mexican beer, such as Modelo, Pacífico, Tecate, Victoria, or Corona, well chilled
+```
 
 Ideally we’d want a searchable list to look like “Tajín, salt, limes, hot sauce, Worcestershire, Mexican beer”, but it would take quite a bit more work to map long descriptive strings to important keywords.  Unfortunately these ingredients were rarely listed with other keywords and tags in the HTML, and so I had to scrap the idea of searching by ingredient.
 
-A possible future project could involve some basic NLP techniques to find important keywords, either in the ingredient lists or the lengthier product descriptions, to collect of bunch of searchable ingredients.
+A possible future project could involve some basic NLP techniques to find important keywords, either in the ingredient lists or the lengthier product descriptions, to collect a robust list of searchable ingredients.
