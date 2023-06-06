@@ -1,3 +1,4 @@
+
 #include "stringRegexCurlMethods.h"
 #include <chrono>
 #include <curl/curl.h>
