@@ -13,15 +13,15 @@ We scrape seriouseats.com for cocktail recipe data, which is added to an applica
 
 # Screenshots
 
-Here are some screenshots with various filtering criteria selected.</br>
+Here are some screenshots with various filtering criteria selected.
 
-<img height="500" alt="Screenshot 2023-06-06 at 4 47 17 PM" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/737beceb-b113-4cc1-914f-9959ee8ac2e2">
-<img height="500" alt="Screenshot 2023-06-06 at 4 46 38 PM" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/4bdbb4ec-4ffc-4d45-a5a3-f7806917761a">
+<img height="500" alt="g1" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/ca9a5e44-22e7-4249-9e8b-2794ebae3ee1">
+<img height="500" alt="g2" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/36882fe9-5715-45ac-8835-d1c3b0ba0ec6">
 
-Clicking a result will take you to the recipe page.</br>
+Clicking a result will take you to the recipe page.
 
-<img height="500" alt="Screenshot 2023-06-06 at 4 47 55 PM" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/c3ce51b0-979c-4988-88c7-f9d4482c3a8e">
-<img height="500" alt="Screenshot 2023-06-06 at 4 48 12 PM" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/e525284f-be34-4727-9e40-40437e408e80">
+<img height="500" alt="g3" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/7f502b08-2e3a-4856-bee7-696143716a07">
+<img height="500" alt="g4" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/eaccaa75-e518-4509-a3d8-5afe1d29833f">
 
 # Project development and the scraping process
 
@@ -35,11 +35,12 @@ When I actually investigated seriouseats.com to see how best to collect all of t
 
 Suppose you want all the locations of the grocery store Kroger.  If you go to Kroger’s website and try to find stores, you end up here:
 
-<img width="560" alt="Screenshot 2023-06-06 at 3 10 49 PM" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/2be5255c-772f-4cc8-bcd1-b73e2a7de3a0">
+<img width="560" alt="g5" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/4df62f23-cef7-4d09-a374-4a409d3acb50">
+
 
 You are prompted to search for locations, by city or state or zip, but this is not ideal.  Though it's not the advertised search method, playing around with the URL a little bit will lead you to the following page:
 
-<img width="560" alt="Screenshot 2023-06-06 at 3 44 44 PM" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/7d5b8e60-fc3f-4425-a650-c74099f8d2c6">
+<img width="560" alt="g6" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/da893be9-43b0-4996-b950-7707d08fba93">
 
 This page contains a link to every store location, so you could either scrape this single page (if you only care about city and state), or you could follow each link to grab a little more detail about each location.
 
@@ -77,7 +78,7 @@ and collecting the 25 links there to later grab the recipe details, but I also d
 
 I finally landed on a semi-manual approach.  Starting from here:
 
-<img width="560" alt="Screenshot 2023-06-06 at 4 07 54 PM" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/65f28fa7-fb6b-44b4-b5eb-0c060f3efea1">
+<img width="560" alt="g7" src="https://github.com/mycoolhairison/cocktail_data/assets/129091329/1c4f7ac0-3f87-4ba2-8041-a10cf0d06f9b">
 
 one can click on various spirits (brandy, vodka, etc) to get a list of links to all recipes containing that spirit.  So for example, collecting all the links at
 
